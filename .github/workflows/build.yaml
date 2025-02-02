@@ -15,14 +15,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 23
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Install Dependencies
         run: |
+          brew install python
           brew install make
           brew install meson
+          sudo pip3 install Jinja2
 
       - name: Install Android NDK
         id: setup-ndk
