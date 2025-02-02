@@ -27,10 +27,15 @@ sealed interface Platform {
 
   val ndkDir: File
     get() {
-      val ndkVersion = "26.1.10909125"
-      val userName = System.getProperty("user.name")
-      val ndkPath = "/Users/${userName}/Library/Android/sdk/ndk"
-      return File(ndkPath, ndkVersion)
+      val hasEnv = System.getProperty("ANDROID_NDK_HOME", "").isNotBlank()
+      return when {
+        hasEnv -> System.getProperty("ANDROID_NDK_HOME").let(::File)
+        else -> {
+          val userName = System.getProperty("user.name")
+          val ndks = File("/Users/${userName}/Library/Android/sdk", "ndk")
+          return ndks.listFiles()!!.first()
+        }
+      }
     }
 
   val toolsChainDir: File

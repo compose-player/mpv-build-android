@@ -1,0 +1,58 @@
+name: Build on macOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install Dependencies
+        run: |
+          brew install make
+          brew install meson
+
+      - name: Install Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: '26.1.10909125'
+          add-to-path: 'false'
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+      - name: placebo
+        run: ./gradlew placebo:buildAndroidBinaries
+
+      - name: mbedtls
+        run: ./gradlew mbedtls:buildAndroidBinaries
+
+      - name: dav1d
+        run: ./gradlew dav1d:buildAndroidBinaries
+
+      - name: ass
+        run: ./gradlew ass:buildAndroidBinaries
+
+      - name: ffmpeg
+        run: ./gradlew ffmpeg:buildAndroidBinaries
+
+      - name: mpv
+        run: ./gradlew mpv:buildAndroidBinaries
+
+      - name: Upload Binaries Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: ./binaries
