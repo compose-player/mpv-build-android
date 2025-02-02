@@ -30,7 +30,7 @@ jobs:
           brew install python
           brew install make
           brew install meson
-          sudo pip3 install Jinja2
+          sudo pip3 install --break-system-packages Jinja2
 
       - name: Install Android NDK
         id: setup-ndk
