@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          brew install python make meson nasm autoconf automake
+          brew install python make meson nasm autoconf automake libtool
           sudo pip3 install --break-system-packages Jinja2
 
       - name: Install Android NDK
