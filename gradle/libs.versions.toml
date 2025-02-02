@@ -1,0 +1,18 @@
+[versions]
+jdk = "21"
+androidOnly-ndk = "12"
+kotlin = "2.1.0"
+library = "0.0.1"
+
+ffmpeg = "n7.1"
+fribidi = "v1.0.16"
+harfbuzz = "10.0.1"
+freetype = "VER-2-13-3"
+mbedtls = "v3.6.1"
+placebo = "v7.349.0"
+mpv = "v0.39.0"
+dav1d = "1.4.3"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version = "5.2.0" }
