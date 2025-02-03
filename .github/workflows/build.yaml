@@ -80,10 +80,14 @@ jobs:
           name: binaries
           path: binaries
 
+      - name: Create tar.gz Archive
+        run: |
+          tar -czvf binaries.tar.gz binaries
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: binaries/*
+          files: binaries.tag.gz
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
