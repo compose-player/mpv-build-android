@@ -31,6 +31,7 @@ jobs:
         run: |
           brew install python make meson nasm autoconf automake libtool
           sudo pip3 install --break-system-packages Jinja2
+          sudo pip3 install --break-system-packages jsonschema
 
       - name: Install Android NDK
         id: setup-ndk
