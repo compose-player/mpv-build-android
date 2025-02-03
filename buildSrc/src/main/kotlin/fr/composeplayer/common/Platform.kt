@@ -33,7 +33,7 @@ sealed interface Platform {
         else -> {
           val userName = System.getProperty("user.name")
           val ndks = File("/Users/${userName}/Library/Android/sdk", "ndk")
-          return ndks.listFiles()!!.first()
+          return ndks.listFiles()!!.first(File::isDirectory)
         }
       }
     }

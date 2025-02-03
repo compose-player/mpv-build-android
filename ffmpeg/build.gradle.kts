@@ -89,27 +89,56 @@ configure(androidTargets) {
       "--extra-cflags=\"-fPIC -I${binariesDir.absolutePath}/include $cFlags".trimEnd() + '"',
       "--extra-ldflags=\"-L${binariesDir.absolutePath}/lib $ldFlags".trimEnd() + '"',
 
-      "--enable-jni",
-      "--enable-mediacodec",
-      "--enable-mbedtls",
-      "--enable-libdav1d",
-      "--disable-vulkan",
+      //Licensing
+      "--disable-gpl",
+      "--disable-nonfree",
+      "--enable-version3",
 
-      "--disable-shared", "--enable-static",
+      //Configuration
+      "--disable-shared",
+      "--enable-static",
+      "--enable-small",
+      "--disable-runtime-cpudetect",
 
-      "--disable-gpl", "--disable-nonfree",
-
-      "--disable-stripping",
-      "--disable-doc",
+      //Programs
       "--disable-programs",
-      "--disable-v4l2-m2m",
-      "--disable-bsfs", "--enable-bsf=extract_extradata,vp9_superframe_split",
-      "--disable-muxers", "--enable-muxer=spdif",
+      "--disable-ffprobe",
+      "--disable-ffplay",
+
+      //Documentation
+      "--disable-doc",
+      "--disable-htmlpages",
+      "--disable-manpages",
+      "--disable-podpages",
+      "--disable-txtpages",
+
+      //Components
+      "--disable-avdevice",
+      "--disable-postproc",
+
+      //Individual components
+      "--disable-muxers",
       "--disable-encoders",
       "--disable-devices",
-      "--enable-filters", "--enable-filter=scale,yadif,w3fdif,bwdif",
+      "--disable-protocols",
+      "--disable-indevs",
 
-      "--enable-version3",
+      "--enable-muxer=spdif",
+      "--enable-protocol=file,http,https,rtmp,rtmps",
+
+      //External library support
+      "--enable-jni",
+      "--enable-libdav1d",
+      "--enable-mediacodec",
+      "--enable-mbedtls",
+      "--disable-vulkan",
+      "--disable-v4l2-m2m",
+
+      //Developer options
+      "--enable-optimizations",
+      "--disable-stripping",
+
+
       *additionalOptions.toTypedArray()
     )
     this.dependsOn(autogen)
