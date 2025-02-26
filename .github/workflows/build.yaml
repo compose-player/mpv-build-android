@@ -1,9 +1,7 @@
-name: Build on macOS
+name: Build on linux
 
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
   pull_request:
@@ -12,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -23,15 +21,12 @@ jobs:
           distribution: oracle
           java-version: 23
 
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
       - name: Install Dependencies
         run: |
-          brew install python make meson nasm autoconf automake libtool
-          sudo pip3 install --break-system-packages Jinja2
-          sudo pip3 install --break-system-packages jsonschema
+          sudo apt-get update
+          sudo apt-get install -y python3 make meson nasm autoconf automake libtool
+          sudo pip3 install Jinja2
+          sudo pip3 install jsonschema
 
       - name: Install Android NDK
         id: setup-ndk
@@ -81,7 +76,7 @@ jobs:
           name: binaries
           path: binaries
 
-      - name: Create tar.gz Archive
+      - name: Create tar.gz archive
         run: |
           tar -czvf binaries.tar.gz binaries
 
