@@ -17,11 +17,11 @@ open class ConfigureTask @Inject constructor(
   @Input lateinit var configureArgs: List<String>
 
   val binariesDir: File
-    @Internal get() = File(project.rootDir, "binaries/${platform.buildDirName}").apply(File::mkdirs)
+    @Internal get() = File(project.rootDir, "binaries/${platform.name}/${platform.buildDirName}").apply(File::mkdirs)
 
   @TaskAction
   fun execute() {
-    val buildDir = File(project.rootDir, "builds/${platform.buildDirName}/${dependency.libName}")
+    val buildDir = File(project.rootDir, "builds/${platform.name}/${platform.buildDirName}/${dependency.libName}")
     if (buildDir.exists()) {
       return
     }

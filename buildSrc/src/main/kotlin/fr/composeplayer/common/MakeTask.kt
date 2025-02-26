@@ -18,8 +18,8 @@ open class MakeTask @Inject constructor(
 
   @TaskAction
   fun execute() {
-    val buildDir = File(project.rootDir, "builds/${platform.buildDirName}/${dependency.libName}")
-    val binariesDir = File(project.rootDir, "binaries/${platform.buildDirName}").apply(File::mkdirs)
+    val buildDir = File(project.rootDir, "builds/${platform.name}/${platform.buildDirName}/${dependency.libName}")
+    val binariesDir = File(project.rootDir, "binaries/${platform.name}/${platform.buildDirName}").apply(File::mkdirs)
 
     require( buildDir.exists() ) { "Build dir does not exists, did ConfigureTask ran before ?" }
 

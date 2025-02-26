@@ -20,10 +20,10 @@ open class MesonTask @Inject constructor(
     @Internal get() = File(project.rootDir, "vendor/${dependency.libName}")
 
   val buildDir: File
-    @Internal get() = File(project.rootDir, "builds/${platform.buildDirName}/${dependency.libName}")
+    @Internal get() = File(project.rootDir, "builds/${platform.name}/${platform.buildDirName}/${dependency.libName}")
 
   val binariesDir: File
-    @Internal get() = File(project.rootDir, "binaries/${platform.buildDirName}").apply(File::mkdirs)
+    @Internal get() = File(project.rootDir, "binaries/${platform.name}/${platform.buildDirName}").apply(File::mkdirs)
 
   @TaskAction
   fun execute() {

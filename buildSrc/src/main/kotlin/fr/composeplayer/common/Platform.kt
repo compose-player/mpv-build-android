@@ -3,17 +3,18 @@ package fr.composeplayer.common
 import java.io.File
 
 sealed interface Platform {
-  data class Android(val abi: AndroidAbi): Platform
+
+  val name: String
+    get() = when (this) {
+      is Android -> "android"
+    }
 
   val buildDirName: String
     get() = when (this) {
-      is Android -> when (this.abi) {
-        AndroidAbi.Arm32 -> "android-armeabi-v7a"
-        AndroidAbi.Arm64 -> "android-arm64-v8a"
-        AndroidAbi.X86 -> "android-x86"
-        AndroidAbi.X86_64 -> "android-x86_64"
-      }
+      is Android -> this.abi.abiName
     }
+
+  data class Android(val abi: AndroidAbi): Platform
 
   val CXX: String
     get() = when (this) {
