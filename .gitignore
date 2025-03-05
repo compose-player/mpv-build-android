@@ -5,3 +5,4 @@ builds
 vendor
 cross-files
 local.properties
+.idea
