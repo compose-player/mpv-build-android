@@ -28,9 +28,9 @@ sealed interface Platform {
 
   val ndkDir: File
     get() {
-      val hasEnv = System.getProperty("ANDROID_NDK_HOME", "").isNotBlank()
+      val hasEnv = System.getenv("ANDROID_NDK_HOME").isNotBlank()
       return when {
-        hasEnv -> System.getProperty("ANDROID_NDK_HOME").let(::File)
+        hasEnv -> System.getenv("ANDROID_NDK_HOME").let(::File)
         else -> {
           val userName = System.getProperty("user.name")
           val ndks = File("/Users/${userName}/Library/Android/sdk", "ndk")

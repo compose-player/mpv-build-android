@@ -20,6 +20,7 @@ jobs:
         with:
           distribution: oracle
           java-version: 23
+          cache: gradle
 
       - name: Install Dependencies
         run: |
@@ -34,11 +35,15 @@ jobs:
         with:
           ndk-version: 'r27c'
           add-to-path: 'false'
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+      - name: Set ANDROID_NDK_HOME
+        run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
 
       - name: prep
         run: chmod +x ./gradlew
+
+      - name: check
+        run: ./gradlew checkEnv
 
       - name: placebo
         run: ./gradlew placebo:buildAndroidBinaries --stacktrace
