@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  workflow_dispatch:  # Manually triggered from GitHub Actions
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 23
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 make meson nasm autoconf automake libtool
+          sudo pip3 install Jinja2 jsonschema
+
+      - name: Install Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: 'r27c'
+          add-to-path: 'false'
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+      - name: Build Projects
+        run: |
+          ./gradlew placebo:buildAndroidBinaries
+          ./gradlew mbedtls:buildAndroidBinaries
+          ./gradlew dav1d:buildAndroidBinaries
+          ./gradlew ass:buildAndroidBinaries
+          ./gradlew ffmpeg:buildAndroidBinaries
+          ./gradlew mpv:buildAndroidBinaries
+
+      - name: Create tar.gz Archive
+        run: tar -czvf binaries.tar.gz binaries
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: binaries.tar.gz
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            - Built automatically via GitHub Actions
+          draft: false
+          prerelease: false
