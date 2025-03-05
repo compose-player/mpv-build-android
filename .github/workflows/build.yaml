@@ -37,20 +37,23 @@ jobs:
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
+      - name: prep
+        run: chmod +x ./gradlew
+
       - name: placebo
-        run: ./gradlew placebo:buildAndroidBinaries
+        run: ./gradlew placebo:buildAndroidBinaries --stacktrace
 
       - name: mbedtls
-        run: ./gradlew mbedtls:buildAndroidBinaries
+        run: ./gradlew mbedtls:buildAndroidBinaries --stacktrace
 
       - name: dav1d
-        run: ./gradlew dav1d:buildAndroidBinaries
+        run: ./gradlew dav1d:buildAndroidBinaries --stacktrace
 
       - name: ass
-        run: ./gradlew ass:buildAndroidBinaries
+        run: ./gradlew ass:buildAndroidBinaries --stacktrace
 
       - name: ffmpeg
-        run: ./gradlew ffmpeg:buildAndroidBinaries
+        run: ./gradlew ffmpeg:buildAndroidBinaries --stacktrace
 
       - name: mpv
-        run: ./gradlew mpv:buildAndroidBinaries
+        run: ./gradlew mpv:buildAndroidBinaries --stacktrace
