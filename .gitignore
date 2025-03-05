@@ -4,3 +4,4 @@ binaries
 builds
 vendor
 cross-files
+local.properties
