@@ -2,6 +2,7 @@ package fr.composeplayer.common
 
 import java.io.File
 
+
 sealed interface Platform {
 
   val name: String
@@ -41,8 +42,31 @@ sealed interface Platform {
 
   val toolsChainDir: File
     get() {
-      val computerArch = "darwin-x86_64"
-      return File(ndkDir, "toolchains/llvm/prebuilt/$computerArch/bin")
+      return File(ndkDir, "toolchains/llvm/prebuilt/${ArchDetector.arch}/bin")
     }
+
+}
+
+object ArchDetector {
+
+  val arch: String
+    get() {
+      val os = System.getProperty("os.name").lowercase()
+      val arch = System.getProperty("os.arch").lowercase()
+
+      return when {
+        os.contains("mac") -> "darwin-x86_64"
+        os.contains("win") -> error("")
+        else -> when {
+          arch.contains("amd64") || arch.contains("x86_64") -> "linux-x86_64"
+          arch.contains("aarch64") || arch.contains("arm64") -> "linux-aarch64"
+          arch.contains("arm") -> "linux-arm"
+          arch.contains("i386") || arch.contains("x86") -> "linux-x86"
+          else -> "linux-unknown"
+        }
+      }
+
+    }
+
 
 }
