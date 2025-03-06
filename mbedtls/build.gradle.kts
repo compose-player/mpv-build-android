@@ -20,7 +20,7 @@ configure(androidTargets) {
     this.dependsOn(cloneMbedtls)
     doLast {
       val sourceDir = File(project.rootDir, "vendor/${Dependency.Mbedtls.libName}")
-      val binariesDir = File(project.rootDir, "binaries/${platform.buildDirName}").apply(File::mkdirs)
+      val binariesDir = File(project.rootDir, "binaries/${platform.name}/${platform.buildDirName}").apply(File::mkdirs)
       exec {
         addExports(platform, binariesDir)
         workingDir = sourceDir
