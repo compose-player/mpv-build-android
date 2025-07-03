@@ -1,0 +1,6 @@
+[versions]
+kotlin = "2.1.21"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version = "6.1.2" }
