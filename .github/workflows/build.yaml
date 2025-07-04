@@ -1,4 +1,4 @@
-name: Build on linux
+name: Build
 
 on:
   pull_request:
@@ -41,28 +41,28 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: dav1d
-        run: ./grawlew assemble[dav1d]
+        run: ./gradlew assemble[dav1d]
 
       - name: placebo
-        run: ./grawlew assemble[placebo]
+        run: ./gradlew assemble[placebo]
 
       - name: freetype
-        run: ./grawlew assemble[freetype]
+        run: ./gradlew assemble[freetype]
 
       - name: harfbuzz
-        run: ./grawlew assemble[harfbuzz]
+        run: ./gradlew assemble[harfbuzz]
 
       - name: fribidi
-        run: ./grawlew assemble[fribidi]
+        run: ./gradlew assemble[fribidi]
 
       - name: ass
-        run: ./grawlew assemble[ass]
+        run: ./gradlew assemble[ass]
 
       - name: mbedtls
-        run: ./grawlew assemble[mbedtls]
+        run: ./gradlew assemble[mbedtls]
 
       - name: ffmpeg
-        run: ./grawlew assemble[ffmpeg]
+        run: ./gradlew assemble[ffmpeg]
 
       - name: mpv
-        run: ./grawlew assemble[mpv]
+        run: ./gradlew assemble[mpv]
