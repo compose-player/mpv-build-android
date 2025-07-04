@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Task
 import org.gradle.process.ExecOperations
 import org.gradle.process.ExecSpec
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.OsType
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -30,8 +31,10 @@ private class ProcessBuilderScope(private val builder: ProcessBuilder) : Command
   override var command: Array<String>
     get() = builder.command().toTypedArray()
     set(value) {
+      val os = System.getProperty("os.name")
+      val sh = if (os.contains("Mac")) "zsh" else "bash"
       builder.command(
-        "zsh", "-l", "-c",
+        sh, "-l", "-c",
         value.joinToString(" "),
       )
     }
