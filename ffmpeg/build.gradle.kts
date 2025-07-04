@@ -34,27 +34,16 @@ registerGenericBuild(
       AndroidArchitecture.X86_64 -> "x86_64"
     }
 
-    val cFlags: String = buildString {
-      val values = when (buildTarget) {
-        AndroidArchitecture.Arm32 -> listOf("-mfpu=neon", "-mcpu-cortex-a8")
-        AndroidArchitecture.Arm64, AndroidArchitecture.X86, AndroidArchitecture.X86_64 -> emptyList()
-      }
-      values.joinToString(separator = " ")
+    val extraCFlags = when (buildTarget) {
+      AndroidArchitecture.Arm32 -> "-fPIC -I${context.prefixDirectory.resolve("include").absolutePath} -mfpu=neon -march=armv7-a"
+      AndroidArchitecture.Arm64,
+      AndroidArchitecture.X86,
+      AndroidArchitecture.X86_64 -> { "-fPIC -I${context.prefixDirectory.resolve("include").absolutePath}" }
     }
+    val extraLdFlags = "-L${context.prefixDirectory.resolve("lib").absolutePath}"
 
-    val extraCFlags = buildString {
-      val _path = context.prefixDirectory.resolve("include").absolutePath
-      append("\"")
-      append( "-fPIC -I${_path} ${cFlags}".trim() )
-      append("\"")
-    }
-
-    val extraLdFlags = buildString {
-      val _path = context.prefixDirectory.resolve("lib").absolutePath
-      append("\"")
-      append("-L${_path}")
-      append("\"")
-    }
+    env.put("ASFLAGS", "-fPIC")
+    env.put("CFLAGS", "-fPIC")
 
     arguments = arrayOf(
       // Licensing options:
@@ -63,7 +52,7 @@ registerGenericBuild(
       "--disable-nonfree",
 
       // Configuration options:
-      "--enable-static",
+      "--disable-static",
       "--enable-shared",
       "--enable-small",
       "--disable-runtime-cpudetect",
@@ -99,12 +88,12 @@ registerGenericBuild(
       // External library support:
       "--disable-iconv",
       "--enable-jni",
-      "--enable-libass",
-      "--enable-libdav1d",
-      "--enable-libfreetype",
-      "--enable-libfribidi",
-      "--enable-libharfbuzz",
-      "--enable-libplacebo",
+      //todo: "--enable-libass",
+      //"--enable-libdav1d",
+      //todo: "--enable-libfreetype",
+      //todo: "--enable-libfribidi",
+      //todo: "--enable-libharfbuzz",
+      //todo: "--enable-libplacebo",
       "--enable-mbedtls",
       "--enable-mediacodec",
       "--disable-v4l2-m2m",
@@ -119,13 +108,15 @@ registerGenericBuild(
       "--nm=${context.toolsChainDirectory.resolve("llvm-nm").absolutePath}",
       "--ar=${context.toolsChainDirectory.resolve("llvm-ar").absolutePath}",
       "--cc=${context.toolsChainDirectory.resolve(buildTarget.clang).absolutePath}",
+      "--as=${context.toolsChainDirectory.resolve(buildTarget.clang).absolutePath}",
       "--cxx=${context.toolsChainDirectory.resolve(buildTarget.cpp).absolutePath}",
       "--pkg-config=pkg-config",
       "--pkg-config-flags=--static",
       "--ranlib=${context.toolsChainDirectory.resolve("llvm-ranlib").absolutePath}",
-      "--extra-cflags=$extraCFlags",
-      "--extra-ldflags=$extraLdFlags",
+      "--extra-cflags=\"$extraCFlags\"",
+      "--extra-ldflags=\"$extraLdFlags\"",
       "--enable-pic",
+      //"--sysroot=${context.toolsChainDirectory.parentFile.resolve("sysroot").absolutePath}",
 
       // Optimization options:
       *when (buildTarget) {

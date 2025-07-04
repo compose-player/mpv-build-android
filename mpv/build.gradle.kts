@@ -17,6 +17,7 @@ registerGenericBuild(
   component = Component.mpv,
   build = {
     arguments = arrayOf(
+      "--default-library", "shared",
       "-Dgpl=false",
       "-Dcplayer=false",
       "-Dlibmpv=true",

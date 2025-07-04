@@ -9,8 +9,8 @@ Produces shared & static binaries
 ./gradlew assemble[fribidi]
 ./gradlew assemble[ass]
 ./gradlew assemble[placebo]
-./gradlew assemble[ffmpeg]
 ./gradlew assemble[mbedtls]
+./gradlew assemble[ffmpeg]
 ./gradlew assemble[mpv]
 ```
 

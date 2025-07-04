@@ -1,4 +1,5 @@
 import fr.composeplayer.builds.android.ProjectUtils
+import fr.composeplayer.builds.android.build.BuildContext.Companion.buildContext
 import fr.composeplayer.builds.android.tasks.registerGenericBuild
 import fr.composeplayer.builds.android.build.Component
 
@@ -22,4 +23,21 @@ registerGenericBuild(
       "-Dtests=false",
     )
   },
+  postBuild = {
+    doLast {
+      val context = buildContext(Component.placebo, it)
+      val pc = context.prefixDirectory.resolve("lib/pkgconfig/libplacebo.pc")
+      val newText = pc.readLines()
+        .joinToString(
+          separator = "\n",
+          transform = {
+            when {
+              it.startsWith("Libs: ") -> "$it -lc++"
+              else -> it
+            }
+          }
+        )
+      pc.writeText(newText)
+    }
+  }
 )

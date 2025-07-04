@@ -13,6 +13,7 @@ import fr.composeplayer.builds.android.utils.exists
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
@@ -34,7 +35,12 @@ abstract class AutoBuild : DefaultTask() {
   @get:Input
   abstract val arguments: Property<Array<String>>
 
+  @get:Input
+  abstract val env: MapProperty<String, String>
+
   private val environement: Map<String, String?> by lazy {
+    val _env = if ( env.isPresent() ) env.get() else emptyMap<String, String>()
+    println("_env = ${_env}")
     val cFlags = context.cFlags.joinToString(separator = " ")
     val ldFlags = context.ldFlags.joinToString(separator = " ")
     val pkgConfigPath = let {
@@ -49,8 +55,9 @@ abstract class AutoBuild : DefaultTask() {
     }
     val pkgConfigPathDefault = execExpectingResult { command = arrayOf("pkg-config", "--variable", "pc_path", "pkg-config") }
     mutableMapOf(
-      "CC" to context.target.clang, //fixme: Set absolute path
-      "CXX" to context.target.cpp, //fixme: Set absolute path
+      *_env.entries.map { it.toPair() }.toTypedArray(),
+      "CC" to context.target.clang,
+      "CXX" to context.target.cpp,
       "PKG_CONFIG_LIBDIR" to "${pkgConfigPath}",//:${pkgConfigPathDefault}",
     )
   }
@@ -60,7 +67,7 @@ abstract class AutoBuild : DefaultTask() {
     if (skip.isPresent && skip.get()) return
 
     val meson = context.sourceDirectory.resolve("meson.build")
-    val autogen = context.sourceDirectory.resolve("autogen")
+    val autogen = context.sourceDirectory.resolve("autogen.sh")
     val cMakeLists = context.sourceDirectory.resolve("CMakeLists.txt")
     val configure = context.sourceDirectory.resolve("configure")
     val bootstrap = context.sourceDirectory.resolve("bootstrap")
@@ -68,20 +75,25 @@ abstract class AutoBuild : DefaultTask() {
     if (!context.sourceDirectory.exists) throw GradleException("No source found for component $component")
 
     try {
-      context.buildDirectory.mkdirs()
-      context.prefixDirectory.mkdirs()
+      with (context.buildDirectory) {
+        deleteRecursively()
+        mkdirs()
+      }
+      with (context.prefixDirectory) {
+        deleteRecursively()
+        mkdirs()
+      }
 
       val crossfile = CrossfileGenerator(context).generate()
 
       when {
         meson.exists() -> {
-          logger.info("Building component [$component] with meson")
+          logger.lifecycle("Building component [$component] with meson")
           execExpectingSuccess {
             env.applyFrom(environement)
             workingDir = context.sourceDirectory
             command = arrayOf(
               "meson", "setup", context.buildDirectory.absolutePath,
-              "--default-library=both",
               "--cross-file", crossfile.absolutePath,
               *arguments.get(),
             )
@@ -103,8 +115,9 @@ abstract class AutoBuild : DefaultTask() {
           }
         }
         else -> {
+          println("autogen.exists() = ${autogen.exists()}")
           if (autogen.exists()) {
-            logger.info("Running autogen for component [$component]")
+            logger.lifecycle("Running autogen for component [$component]")
             execExpectingSuccess {
               env.applyFrom(environement)
               env["NOCONFIGURE"] = "1"
@@ -114,7 +127,7 @@ abstract class AutoBuild : DefaultTask() {
           }
           when {
             cMakeLists.exists() -> {
-              logger.info("Runing cmake for component [$component]")
+              logger.lifecycle("Runing cmake for component [$component]")
               execExpectingSuccess {
                 env.applyFrom(environement)
                 workingDir = context.buildDirectory
@@ -128,15 +141,16 @@ abstract class AutoBuild : DefaultTask() {
                   "-DCMAKE_SYSTEM_NAME=Android",
                   "-DCMAKE_SYSTEM_PROCESSOR=${target.get().cmakeSystemProcessor}",
                   "-DCMAKE_INSTALL_PREFIX=${context.prefixDirectory.absolutePath}",
-                  "-DBUILD_SHARED_LIBS=ON",
+                  "-DBUILD_SHARED_LIBS=OFF",
                   "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+                  "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
                   *arguments.get(),
                 )
               }
             }
             else -> {
               if (!configure.exists() && bootstrap.exists()) {
-                logger.info("Runing bootstrap for component [$component]")
+                logger.lifecycle("Runing bootstrap for component [$component]")
                 execExpectingSuccess {
                   env.applyFrom(environement)
                   workingDir = context.sourceDirectory
@@ -146,7 +160,7 @@ abstract class AutoBuild : DefaultTask() {
               if (!configure.exists()) {
                 throw GradleException("No build system found for dependency: ${component}")
               }
-              logger.info("Runing configure for component [$component]")
+              logger.lifecycle("Runing configure for component [$component]")
               execExpectingSuccess {
                 env.applyFrom(environement)
                 workingDir = context.buildDirectory
@@ -158,7 +172,7 @@ abstract class AutoBuild : DefaultTask() {
               }
             }
           }
-          logger.info("Runing make for component [$component]")
+          logger.lifecycle("Runing make for component [$component]")
           execExpectingSuccess {
             env.applyFrom(environement)
             workingDir = context.buildDirectory
@@ -173,7 +187,7 @@ abstract class AutoBuild : DefaultTask() {
       }
 
     } catch (error: Throwable) {
-      context.buildDirectory.deleteRecursively()
+      //context.buildDirectory.deleteRecursively()
       context.prefixDirectory.deleteRecursively()
       CrossfileGenerator(context).delete()
       when {

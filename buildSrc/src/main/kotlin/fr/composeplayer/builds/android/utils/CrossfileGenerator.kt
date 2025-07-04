@@ -32,7 +32,7 @@ class CrossfileGenerator(val context: BuildContext) {
     val content = """
       [built-in options]
       buildtype = 'release'
-      default_library = 'both'
+      default_library = 'static'
       wrap_mode = 'nodownload'
       prefix = '${context.prefixDirectory.absolutePath}'
       c_args = [$cFlags]

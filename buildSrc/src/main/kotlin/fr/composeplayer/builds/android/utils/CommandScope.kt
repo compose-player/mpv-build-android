@@ -65,7 +65,7 @@ fun Task.execExpectingSuccess(
   exec.submit {
     process.inputStream
       .bufferedReader()
-      .forEachLine { logger.info(it) }
+      .forEachLine { logger.lifecycle(it) }
   }
 
   val resultCode = try { process.waitFor() } finally { exec.shutdownNow() }

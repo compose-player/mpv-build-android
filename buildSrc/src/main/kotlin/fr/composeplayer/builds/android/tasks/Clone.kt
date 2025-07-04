@@ -3,6 +3,7 @@ package fr.composeplayer.builds.android.tasks
 import fr.composeplayer.builds.android.build.Component
 import fr.composeplayer.builds.android.utils.execExpectingSuccess
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
@@ -25,10 +26,10 @@ abstract class Clone @Inject constructor(
     try {
       val exists = vendorDir.resolve(dirName).exists()
       if (exists) {
-        logger.info("Skipping clone for component [$dirName]")
+        logger.lifecycle("Skipping clone for component [$dirName]")
         return
       }
-      logger.info("Cloning component [$dirName]")
+      logger.lifecycle("Cloning component [$dirName]")
       operations.execExpectingSuccess {
         workingDir = vendorDir
         command = arrayOf("git", "clone", "--depth", "1", "--branch", branch, *gitArgs, url, dirName)
@@ -48,7 +49,7 @@ abstract class Clone @Inject constructor(
       }
     } catch (error: Throwable) {
       vendorDir.resolve(dirName).deleteRecursively()
-      throw error
+      if (error is GradleException) throw error else throw GradleException("Failed to clone $dirName", error)
     }
 
   }
