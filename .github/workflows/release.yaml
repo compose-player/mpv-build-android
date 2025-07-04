@@ -38,34 +38,34 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: dav1d
-        run: ./gradlew assemble[dav1d]
+        run: ./gradlew assemble[dav1d] --info --stacktrace
 
       - name: placebo
-        run: ./gradlew assemble[placebo]
+        run: ./gradlew assemble[placebo] --info --stacktrace
 
       - name: freetype
-        run: ./gradlew assemble[freetype]
+        run: ./gradlew assemble[freetype] --info --stacktrace
 
       - name: harfbuzz
-        run: ./gradlew assemble[harfbuzz]
+        run: ./gradlew assemble[harfbuzz] --info --stacktrace
 
       - name: fribidi
-        run: ./gradlew assemble[fribidi]
+        run: ./gradlew assemble[fribidi] --info --stacktrace
 
       - name: ass
-        run: ./gradlew assemble[ass]
+        run: ./gradlew assemble[ass] --info --stacktrace
 
       - name: mbedtls
-        run: ./gradlew assemble[mbedtls]
+        run: ./gradlew assemble[mbedtls] --info --stacktrace
 
       - name: ffmpeg
-        run: ./gradlew assemble[ffmpeg]
+        run: ./gradlew assemble[ffmpeg] --info --stacktrace
 
       - name: mpv
-        run: ./gradlew assemble[mpv]
+        run: ./gradlew assemble[mpv] --info --stacktrace
 
       - name: Create release artifacts
-        run: ./gradlew createArtifacts
+        run: ./gradlew createArtifacts --info --stacktrace
 
       - name: Extract version from Gradle
         id: get_version
