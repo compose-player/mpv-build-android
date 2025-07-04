@@ -58,7 +58,7 @@ abstract class AutoBuild : DefaultTask() {
       *_env.entries.map { it.toPair() }.toTypedArray(),
       "CC" to context.target.clang,
       "CXX" to context.target.cpp,
-      "PKG_CONFIG_LIBDIR" to "${pkgConfigPath}",//:${pkgConfigPathDefault}",
+      "PKG_CONFIG_LIBDIR" to "${pkgConfigPath}",
     )
   }
 
@@ -88,7 +88,7 @@ abstract class AutoBuild : DefaultTask() {
 
       when {
         meson.exists() -> {
-          logger.lifecycle("Building component [$component] with meson")
+          logger.lifecycle("Building component [${component.get()}] with meson")
           execExpectingSuccess {
             env.applyFrom(environement)
             workingDir = context.sourceDirectory
@@ -117,7 +117,7 @@ abstract class AutoBuild : DefaultTask() {
         else -> {
           println("autogen.exists() = ${autogen.exists()}")
           if (autogen.exists()) {
-            logger.lifecycle("Running autogen for component [$component]")
+            logger.lifecycle("Running autogen for component [${component.get()}]")
             execExpectingSuccess {
               env.applyFrom(environement)
               env["NOCONFIGURE"] = "1"
@@ -127,7 +127,7 @@ abstract class AutoBuild : DefaultTask() {
           }
           when {
             cMakeLists.exists() -> {
-              logger.lifecycle("Runing cmake for component [$component]")
+              logger.lifecycle("Runing cmake for component [${component.get()}]")
               execExpectingSuccess {
                 env.applyFrom(environement)
                 workingDir = context.buildDirectory
@@ -150,7 +150,7 @@ abstract class AutoBuild : DefaultTask() {
             }
             else -> {
               if (!configure.exists() && bootstrap.exists()) {
-                logger.lifecycle("Runing bootstrap for component [$component]")
+                logger.lifecycle("Runing bootstrap for component [${component.get()}]")
                 execExpectingSuccess {
                   env.applyFrom(environement)
                   workingDir = context.sourceDirectory
@@ -158,9 +158,9 @@ abstract class AutoBuild : DefaultTask() {
                 }
               }
               if (!configure.exists()) {
-                throw GradleException("No build system found for dependency: ${component}")
+                throw GradleException("No build system found for dependency: ${component.get()}")
               }
-              logger.lifecycle("Runing configure for component [$component]")
+              logger.lifecycle("Runing configure for component [${component.get()}]")
               execExpectingSuccess {
                 env.applyFrom(environement)
                 workingDir = context.buildDirectory
@@ -172,7 +172,7 @@ abstract class AutoBuild : DefaultTask() {
               }
             }
           }
-          logger.lifecycle("Runing make for component [$component]")
+          logger.lifecycle("Runing make for component [${component.get()}]")
           execExpectingSuccess {
             env.applyFrom(environement)
             workingDir = context.buildDirectory
@@ -187,7 +187,7 @@ abstract class AutoBuild : DefaultTask() {
       }
 
     } catch (error: Throwable) {
-      //context.buildDirectory.deleteRecursively()
+      context.buildDirectory.deleteRecursively()
       context.prefixDirectory.deleteRecursively()
       CrossfileGenerator(context).delete()
       when {

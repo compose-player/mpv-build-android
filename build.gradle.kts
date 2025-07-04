@@ -1,5 +1,6 @@
 import fr.composeplayer.builds.android.ProjectUtils
 import org.gradle.kotlin.dsl.support.zipTo
+import fr.composeplayer.builds.android.build.Component
 
 plugins {
   alias(libs.plugins.kotlin.jvm) apply false
@@ -7,6 +8,21 @@ plugins {
 }
 
 afterEvaluate {
+
+  val printVersion by tasks.registering {
+    doLast { print(ProjectUtils.VERSION) }
+  }
+
+  val printDeps by tasks.registering {
+    doLast {
+      val text = buildString {
+        for (dep in Component.values()) {
+          appendLine("${dep.name}: ${dep.branch}")
+        }
+      }
+      print(text)
+    }
+  }
 
   val cleanEverything by tasks.registering {
     group = "mpv-build"
@@ -58,4 +74,29 @@ afterEvaluate {
     }
   }
 
+  val assemble by tasks.registering {
+    group = "mpv-build"
+    val ffmpeg = tasks.getByName("assemble[ffmpeg]")
+    val dav1d = tasks.getByName("assemble[dav1d]")
+    val placebo = tasks.getByName("assemble[placebo]")
+    val mbedtls = tasks.getByName("assemble[mbedtls]")
+    val mpv = tasks.getByName("assemble[mpv]")
+    val freetype = tasks.getByName("assemble[freetype]")
+    val harfbuzz = tasks.getByName("assemble[harfbuzz]")
+    val fribidi = tasks.getByName("assemble[fribidi]")
+    val ass = tasks.getByName("assemble[ass]")
+
+    harfbuzz.mustRunAfter(freetype)
+    ass.mustRunAfter(harfbuzz, fribidi, freetype)
+    placebo.mustRunAfter(dav1d)
+    ffmpeg.mustRunAfter(mbedtls, ass, placebo)
+    mpv.mustRunAfter(ffmpeg)
+    dependsOn(ffmpeg, dav1d, placebo, mbedtls, mpv, freetype, harfbuzz, fribidi, ass)
+    finalizedBy(packageArtifacts)
+  }
+
+}
+
+operator fun TaskContainer.get(key: Component) {
+  this.getByName("assemble[${key.name}]")
 }

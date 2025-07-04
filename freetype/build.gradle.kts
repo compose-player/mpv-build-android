@@ -17,12 +17,10 @@ registerGenericBuild(
   component = Component.freetype,
   build = {
     arguments = arrayOf(
-      //"-Dbrotli=disabled",
-      //"-Dbzip2=disabled",
-      //"-Dharfbuzz=disabled",
-      //"-Dpng=disabled",
-      //"-Dtests=disabled",
-      //"-Dzlib=disabled",
+      "-Dzlib=system",
+      "-Dbrotli=disabled",
+      "-Dpng=disabled",
+      "-Dtests=disabled",
     )
   },
 )

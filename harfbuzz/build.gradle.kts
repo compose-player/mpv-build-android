@@ -19,9 +19,7 @@ registerGenericBuild(
     arguments = arrayOf(
       "-Dtests=disabled",
       "-Ddocs=disabled",
-      //"-Dglib=disabled",
-      //"-Dcairo=disabled",
-      //"-Dfreetype=disabled",
+      "-Dfreetype=enabled",
     )
   },
 )

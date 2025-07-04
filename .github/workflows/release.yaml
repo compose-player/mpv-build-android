@@ -1,0 +1,93 @@
+name: Build on linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 23
+          cache: gradle
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 make meson nasm autoconf automake libtool
+          sudo pip3 install Jinja2
+          sudo pip3 install jsonschema
+
+      - name: Install Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: 'r28b'
+          add-to-path: 'false'
+
+      - name: Set ANDROID_NDK_HOME
+        run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+
+      - name: prep
+        run: chmod +x ./gradlew
+
+      - name: dav1d
+        run: ./grawlew assemble[dav1d]
+
+      - name: placebo
+        run: ./grawlew assemble[placebo]
+
+      - name: freetype
+        run: ./grawlew assemble[freetype]
+
+      - name: harfbuzz
+        run: ./grawlew assemble[harfbuzz]
+
+      - name: fribidi
+        run: ./grawlew assemble[fribidi]
+
+      - name: ass
+        run: ./grawlew assemble[ass]
+
+      - name: mbedtls
+        run: ./grawlew assemble[mbedtls]
+
+      - name: ffmpeg
+        run: ./grawlew assemble[ffmpeg]
+
+      - name: mpv
+        run: ./grawlew assemble[mpv]
+
+      - name: Create release artifacts
+        run: ./gradlew createArtifacts
+
+      - name: Extract version from Gradle
+        id: get_version
+        run: |
+          VERSION=$(./gradlew -q printVersion)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Extract dependencies versions
+        id: get_dependencies_version
+        run: |
+          DEPS_VERSIONS=$(./gradlew -q printDeps)
+          echo "deps_versions=$DEPS_VERSIONS" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: .github_archives/archive.zip
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Version ${{ steps.get_version.outputs.version }}
+          body: |
+            - Built automatically via GitHub Actions
+            ${{ steps.get_version.outputs.version }}
+          draft: true
+          prerelease: false
+          generate_release_notes: true
