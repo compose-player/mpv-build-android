@@ -6,7 +6,7 @@ object ProjectUtils {
 
   val MIN_API = 21
   val JAVA_VERSION: Int = 23
-  val PARALLELISM: Int = 10
+  val PARALLELISM: Int = 4
   val NDK_VERSION: String = "28.1.13356709"
 
   val BUILD_TARGETS = AndroidArchitecture.values().toList()
