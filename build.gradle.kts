@@ -37,7 +37,7 @@ afterEvaluate {
 
   val packageArtifacts by tasks.registering {
     doLast {
-      val artifacts = rootDir.resolve(".github_artifacts")
+      val artifacts = rootDir.resolve("github_artifacts")
         .apply(File::deleteRecursively)
         .apply(File::mkdirs)
 

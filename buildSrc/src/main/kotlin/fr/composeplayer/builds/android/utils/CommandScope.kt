@@ -4,7 +4,6 @@ import org.gradle.api.GradleException
 import org.gradle.api.Task
 import org.gradle.process.ExecOperations
 import org.gradle.process.ExecSpec
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.OsType
 import java.io.File
 import java.util.concurrent.Executors
 

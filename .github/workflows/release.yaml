@@ -5,6 +5,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -65,7 +67,7 @@ jobs:
         run: ./gradlew assemble[mpv] --info --stacktrace
 
       - name: Create release artifacts
-        run: ./gradlew createArtifacts --info --stacktrace
+        run: ./gradlew packageArtifacts --info --stacktrace
 
       - name: Extract version from Gradle
         id: get_version
@@ -77,17 +79,21 @@ jobs:
         id: get_dependencies_version
         run: |
           DEPS_VERSIONS=$(./gradlew -q printDeps)
-          echo "deps_versions=$DEPS_VERSIONS" >> $GITHUB_OUTPUT
+          {
+            echo "deps_versions<<EOF"
+            echo "$DEPS_VERSIONS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: .github_archives/archive.zip
+          files: github_artifacts/*.zip
           tag_name: ${{ steps.get_version.outputs.version }}
           name: Version ${{ steps.get_version.outputs.version }}
           body: |
             - Built automatically via GitHub Actions
-            ${{ steps.get_version.outputs.version }}
+            ${{ steps.get_dependencies_version.outputs.deps_versions }}
           draft: true
           prerelease: false
           generate_release_notes: true
