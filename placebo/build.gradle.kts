@@ -18,7 +18,10 @@ registerGenericBuild(
   component = Component.placebo,
   build = {
     arguments = arrayOf(
-      "-Dvulkan=disabled",
+      "-Dxxhash=disabled",
+      "-Dshaderc=enabled",
+      "-Dvulkan=enabled",
+      "-Dvk-proc-addr=enabled",
       "-Ddemos=false",
       "-Dtests=false",
     )

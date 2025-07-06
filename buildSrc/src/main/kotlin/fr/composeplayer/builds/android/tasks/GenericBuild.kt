@@ -15,6 +15,7 @@ import org.gradle.kotlin.dsl.registering
 
 fun Project.registerGenericBuild(
   group: String = "generic build",
+  clone: Clone.() -> Unit = {},
   buildTargets: List<AndroidArchitecture> = ProjectUtils.BUILD_TARGETS,
   component: Component,
   prebuild: Task.(target: AndroidArchitecture) -> Unit = { enabled = false },
@@ -42,8 +43,9 @@ fun Project.registerGenericBuild(
     /* name = */  "clone",
     /* type = */  Clone::class.java,
     /* configurationAction = */  {
+      clone()
       this.group = group
-      this.applyFrom(component)
+      if (enabled) applyFrom(component)
     },
   )
 

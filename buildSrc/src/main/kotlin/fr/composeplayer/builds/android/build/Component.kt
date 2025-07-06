@@ -3,6 +3,8 @@ package fr.composeplayer.builds.android.build
 enum class Component {
   ffmpeg,
   //dovi,
+  shaderc,
+  vulkan,
   dav1d,
   placebo,
   mbedtls,
@@ -23,6 +25,8 @@ enum class Component {
       ass -> "0.17.4"
       placebo -> "v7.351.0"
       mpv -> "v0.40.0"
+      shaderc -> "v2025.3"
+      vulkan -> error("")
     }
 
   val gitUrl: String
@@ -36,6 +40,8 @@ enum class Component {
       ass -> "https://github.com/libass/libass.git"
       placebo -> "https://code.videolan.org/videolan/libplacebo.git"
       mpv -> "https://github.com/mpv-player/mpv.git"
+      shaderc -> "https://github.com/google/shaderc.git"
+      vulkan -> error("")
     }
 
   val gitArgs: Array<String>
@@ -50,5 +56,6 @@ enum class Component {
       harfbuzz -> emptyArray()
       fribidi -> emptyArray()
       ass -> emptyArray()
+      shaderc, vulkan -> emptyArray()
     }
 }

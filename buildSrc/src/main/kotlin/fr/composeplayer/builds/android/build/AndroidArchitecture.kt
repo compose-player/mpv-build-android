@@ -21,7 +21,7 @@ enum class AndroidArchitecture {
     }
 
   val minApi: Int
-    get() = 21
+    get() = 24
 
   val clang: String
     get() = "$ndkTriple$minApi-clang"
@@ -40,10 +40,10 @@ enum class AndroidArchitecture {
 
   val cmakeSystemProcessor: String
     get() = when (this) {
-      AndroidArchitecture.Arm32 -> "armv7a"
-      AndroidArchitecture.Arm64 -> "aarch64"
-      AndroidArchitecture.X86 -> "x86"
-      AndroidArchitecture.X86_64 -> "x86_64"
+      Arm32 -> "armv7a"
+      Arm64 -> "aarch64"
+      X86 -> "x86"
+      X86_64 -> "x86_64"
     }
 
 }

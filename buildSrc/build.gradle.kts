@@ -17,3 +17,11 @@ java {
 tasks.withType<KotlinCompile> {
   compilerOptions.jvmTarget = JvmTarget.JVM_23
 }
+
+sourceSets {
+  val main by getting {
+    val location = layout.projectDirectory.asFile.resolve("src/main/kotlin")
+    kotlin.srcDirs.add(location)
+    java.srcDirs.add(location)
+  }
+}

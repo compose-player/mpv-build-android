@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -29,6 +30,8 @@
             <option value="$PROJECT_DIR$/mbedtls" />
             <option value="$PROJECT_DIR$/mpv" />
             <option value="$PROJECT_DIR$/placebo" />
+            <option value="$PROJECT_DIR$/shaderc" />
+            <option value="$PROJECT_DIR$/vulkan" />
           </set>
         </option>
       </GradleProjectSettings>

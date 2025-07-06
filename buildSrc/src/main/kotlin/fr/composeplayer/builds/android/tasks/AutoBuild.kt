@@ -40,7 +40,6 @@ abstract class AutoBuild : DefaultTask() {
 
   private val environement: Map<String, String?> by lazy {
     val _env = if ( env.isPresent() ) env.get() else emptyMap<String, String>()
-    println("_env = ${_env}")
     val cFlags = context.cFlags.joinToString(separator = " ")
     val ldFlags = context.ldFlags.joinToString(separator = " ")
     val pkgConfigPath = let {
@@ -115,7 +114,6 @@ abstract class AutoBuild : DefaultTask() {
           }
         }
         else -> {
-          println("autogen.exists() = ${autogen.exists()}")
           if (autogen.exists()) {
             logger.lifecycle("Running autogen for component [${component.get()}]")
             execExpectingSuccess {

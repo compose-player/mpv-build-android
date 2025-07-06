@@ -23,6 +23,7 @@ registerGenericBuild(
       "-Dlibmpv=true",
       "-Dtests=false",
 
+      "-Dvulkan=enabled",
       "-Dcdda=disabled",
       "-Dcplugins=disabled",
       "-Ddvbin=disabled",

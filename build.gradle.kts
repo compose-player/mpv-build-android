@@ -1,6 +1,7 @@
 import fr.composeplayer.builds.android.ProjectUtils
 import org.gradle.kotlin.dsl.support.zipTo
 import fr.composeplayer.builds.android.build.Component
+import fr.composeplayer.builds.android.utils.exists
 
 plugins {
   alias(libs.plugins.kotlin.jvm) apply false
@@ -50,9 +51,9 @@ afterEvaluate {
             .resolve("binaries")
             .listFiles().orEmpty().toList()
             .map { it.resolve(target.name) }
-
           for (component in components) {
             val include = component.resolve("include")
+            if (!include.exists) continue
             include
               .copyRecursively(
                 target = temp.resolve("${target.abiName}/include").apply(File::mkdirs)
@@ -64,7 +65,6 @@ afterEvaluate {
               file.copyTo(destination)
             }
           }
-
         }
         zipTo(archive, temp)
       } finally {
@@ -74,7 +74,7 @@ afterEvaluate {
     }
   }
 
-  val assemble by tasks.registering {
+  val assembleAll by tasks.registering {
     group = "mpv-build"
     val ffmpeg = tasks.getByName("assemble[ffmpeg]")
     val dav1d = tasks.getByName("assemble[dav1d]")
@@ -85,13 +85,20 @@ afterEvaluate {
     val harfbuzz = tasks.getByName("assemble[harfbuzz]")
     val fribidi = tasks.getByName("assemble[fribidi]")
     val ass = tasks.getByName("assemble[ass]")
+    val shaderc = tasks.getByName("assemble[shaderc]")
+    val vulkan = tasks.getByName("assemble[vulkan]")
+
+
 
     harfbuzz.mustRunAfter(freetype)
     ass.mustRunAfter(harfbuzz, fribidi, freetype)
-    placebo.mustRunAfter(dav1d)
+    shaderc.mustRunAfter(vulkan)
+    placebo.mustRunAfter(dav1d, shaderc, vulkan)
     ffmpeg.mustRunAfter(mbedtls, ass, placebo)
     mpv.mustRunAfter(ffmpeg)
-    dependsOn(ffmpeg, dav1d, placebo, mbedtls, mpv, freetype, harfbuzz, fribidi, ass)
+
+    dependsOn(ffmpeg, dav1d, placebo, mbedtls, mpv, freetype, harfbuzz, fribidi, ass, vulkan, shaderc)
+
     finalizedBy(packageArtifacts)
   }
 
