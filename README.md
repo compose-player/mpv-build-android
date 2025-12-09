@@ -1,24 +1,21 @@
 Build scripts to compile mpv & its dependencies for Android  
-Produces shared & static binaries
 
-## How to build
+## Prepare CLI
 ```shell
-./gradlew assemble[dav1d]
-./gradlew assemble[freetype]
-./gradlew assemble[harfbuzz]
-./gradlew assemble[fribidi]
-./gradlew assemble[ass]
-./gradlew assemble[placebo]
-./gradlew assemble[mbedtls]
-./gradlew assemble[ffmpeg]
-./gradlew assemble[mpv]
+./gradlew cli:jar
 ```
 
+## Build
+```shell
+./mpv-build --clean=all --libraries=all --targets=all
+```
+**Targets**: all **OR** arm32, arm64, x86, x86_64\
+**Libraries**: all **OR** ffmpeg,dav1d,placebo,mbedtls,mpv,freetype,harfbuzz,fribidi,ass\
+**Clean**: all **OR** ffmpeg,dav1d,placebo,mbedtls,mpv,freetype,harfbuzz,fribidi,ass\
+
+
 ## TODO
-- shaderc
-- vulkan
-- lcms
+- ~~shaderc,vulkan,lcms, dovi~~ Performance is just horrible
 - unibreak
 - uchardet
 - png
-- dovi

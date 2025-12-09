@@ -30,55 +30,45 @@ jobs:
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: 'r28b'
+          ndk-version: 'r29'
           add-to-path: 'false'
 
       - name: Set ANDROID_NDK_HOME
         run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
 
       - name: prep
-        run: chmod +x ./gradlew
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./mpv-build
 
-      - name: dav1d
-        run: ./gradlew assemble[dav1d] --info --stacktrace
+      - name: Build CLI
+        run: ./gradlew cli:jar
 
-      - name: placebo
-        run: ./gradlew assemble[placebo] --info --stacktrace
+      - name: Build for arm32
+        run: ./mpv-build --libraries=all --targets=arm32
 
-      - name: freetype
-        run: ./gradlew assemble[freetype] --info --stacktrace
+      - name: Build for arm64
+        run: ./mpv-build --libraries=all --targets=arm64
 
-      - name: harfbuzz
-        run: ./gradlew assemble[harfbuzz] --info --stacktrace
+      - name: Build for x86
+        run: ./mpv-build --libraries=all --targets=x86
 
-      - name: fribidi
-        run: ./gradlew assemble[fribidi] --info --stacktrace
-
-      - name: ass
-        run: ./gradlew assemble[ass] --info --stacktrace
-
-      - name: mbedtls
-        run: ./gradlew assemble[mbedtls] --info --stacktrace
-
-      - name: ffmpeg
-        run: ./gradlew assemble[ffmpeg] --info --stacktrace
-
-      - name: mpv
-        run: ./gradlew assemble[mpv] --info --stacktrace
+      - name: Build for x86_64
+        run: ./mpv-build --libraries=all --targets=x86_64
 
       - name: Create release artifacts
-        run: ./gradlew packageArtifacts --info --stacktrace
+        run: ./mpv-build --bundle-artifacts
 
-      - name: Extract version from Gradle
+      - name: Extract version
         id: get_version
         run: |
-          VERSION=$(./gradlew -q printVersion)
+          VERSION=$(./mpv-build --print-version)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Extract dependencies versions
         id: get_dependencies_version
         run: |
-          DEPS_VERSIONS=$(./gradlew -q printDeps)
+          DEPS_VERSIONS=$(./mpv-build --print-libraries)
           {
             echo "deps_versions<<EOF"
             echo "$DEPS_VERSIONS"
@@ -88,7 +78,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: github_artifacts/*.zip
+          files: artifacts.zip
           tag_name: ${{ steps.get_version.outputs.version }}
           name: Version ${{ steps.get_version.outputs.version }}
           body: |

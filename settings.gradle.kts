@@ -6,12 +6,5 @@ plugins {
 
 rootProject.name = "mpv-build-android"
 
-include("dav1d")
-include("mbedtls")
-include("harfbuzz")
-include("fribidi")
-include("freetype")
-include("ass")
-include("placebo")
-include("ffmpeg")
-include("mpv")
+include(":sources")
+include(":cli")

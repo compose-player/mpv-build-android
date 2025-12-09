@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+JAR_PATH="$SCRIPT_DIR/cli/build/libs/mpv-builder-cli.jar"
+java -jar "$JAR_PATH" "$@"

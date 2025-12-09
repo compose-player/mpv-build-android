@@ -50,3 +50,4 @@ bin/
 /vendor/
 /.github_artifacts/
 /crossfiles/
+/.products/

@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: oracle
-          java-version: 23
+          java-version: 21
           cache: gradle
 
       - name: Install Dependencies
@@ -26,43 +26,33 @@ jobs:
           sudo pip3 install Jinja2
           sudo pip3 install jsonschema
 
-
       - name: Install Android NDK
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: 'r28b'
+          ndk-version: 'r29'
           add-to-path: 'false'
 
       - name: Set ANDROID_NDK_HOME
         run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
 
       - name: prep
-        run: chmod +x ./gradlew
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./mpv-build
 
-      - name: dav1d
-        run: ./gradlew assemble[dav1d]
+      - name: Build CLI
+        run: ./gradlew cli:jar
 
-      - name: placebo
-        run: ./gradlew assemble[placebo]
+      - name: Build for arm32
+        run: ./mpv-build --libraries=all --targets=arm32
 
-      - name: freetype
-        run: ./gradlew assemble[freetype]
+      - name: Build for arm64
+        run: ./mpv-build --libraries=all --targets=arm64
 
-      - name: harfbuzz
-        run: ./gradlew assemble[harfbuzz]
+      - name: Build for x86
+        run: ./mpv-build --libraries=all --targets=x86
 
-      - name: fribidi
-        run: ./gradlew assemble[fribidi]
+      - name: Build for x86_64
+        run: ./mpv-build --libraries=all --targets=x86_64
 
-      - name: ass
-        run: ./gradlew assemble[ass]
-
-      - name: mbedtls
-        run: ./gradlew assemble[mbedtls]
-
-      - name: ffmpeg
-        run: ./gradlew assemble[ffmpeg]
-
-      - name: mpv
-        run: ./gradlew assemble[mpv]
