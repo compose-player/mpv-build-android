@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT">
-            <builds>
-              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
-                <projects>
-                  <project path="$PROJECT_DIR$/buildSrc" />
-                </projects>
-              </build>
-            </builds>
-          </compositeBuild>
-        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="" />
+        <option name="gradleJvm" value="jbr-21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/ass" />
-            <option value="$PROJECT_DIR$/buildSrc" />
-            <option value="$PROJECT_DIR$/dav1d" />
-            <option value="$PROJECT_DIR$/ffmpeg" />
-            <option value="$PROJECT_DIR$/freetype" />
-            <option value="$PROJECT_DIR$/fribidi" />
-            <option value="$PROJECT_DIR$/harfbuzz" />
-            <option value="$PROJECT_DIR$/mbedtls" />
-            <option value="$PROJECT_DIR$/mpv" />
-            <option value="$PROJECT_DIR$/placebo" />
+            <option value="$PROJECT_DIR$/cli" />
+            <option value="$PROJECT_DIR$/sources" />
           </set>
         </option>
       </GradleProjectSettings>
