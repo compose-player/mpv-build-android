@@ -140,6 +140,7 @@ class FFmpegBuilder(override val target: AndroidABI) : BaseBuilder() {
         // External library support:
         "--enable-mediacodec",
         "--enable-jni",
+        "--enable-mbedtls",
 
 
         // Toolchain options:
@@ -154,7 +155,7 @@ class FFmpegBuilder(override val target: AndroidABI) : BaseBuilder() {
         "--strip=${TOOLCHAINS_DIR.resolve("llvm-strip").absolutePath}",
         "--cxx=${TOOLCHAINS_DIR.resolve(target.CPP).absolutePath}",
         "--pkg-config=pkg-config",
-        //"--pkg-config-flags=--static",
+        "--pkg-config-flags=--static",
         "--ranlib=${TOOLCHAINS_DIR.resolve("llvm-ranlib").absolutePath}",
         "--extra-cflags=$extraCFlags",
         "--extra-ldflags=$extraLdFlags",
