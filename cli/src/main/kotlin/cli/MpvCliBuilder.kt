@@ -71,7 +71,7 @@ class MpvCliBuilder : Callable<Int> {
       return@runBlocking 0
     }
     if (printVersion) {
-      println("1.1.0")
+      println("1.1.1")
       return@runBlocking 0
     }
     val build = libraries.distinct().sortedBy(Library::buildOrder)
