@@ -132,7 +132,7 @@ class AutoBuildTask(
                 command = arrayOf(bootstrap.absolutePath)
               }
             }
-            if (!configure.exists) throw IllegalStateException("No build system found for dependency: [$target]")
+            if (!configure.exists) throw IllegalStateException("No build system found for dependency: [${lib.name}]")
             println("Starting configure: [${lib.name} - ${target.name}]")
             commandLine {
               env.applyFrom(environment)
